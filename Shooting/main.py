@@ -5,7 +5,7 @@ import cv2
 import ntcore
 import numpy as np
 from cscore import CameraServer, MjpegServer, UsbCamera, VideoSource
-from find_hexagon import detect_hexagon
+
 from networktables import NetworkTables, NetworkTablesInstance
 
 
