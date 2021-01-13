@@ -6,7 +6,7 @@ from parameters import param as parameters
 from networktables import NetworkTables
 
 
-def detect_hexagon(frame):
+def detect_ball(frame):
     return
 
 def init_configures():
@@ -31,9 +31,9 @@ def main():
         frame = cv2.remap(frame, parameters.MAP1, parameters.MAP2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
 
         try:
-            distance, angle = detect_hexagon(frame)
-            smartdashboard.putNumber("Distance_Hexagon", distance)
-            smartdashboard.putNumber("Angle_Hexagon", angle)
+            distance, angle = detect_ball(frame)
+            smartdashboard.putNumber("Distance_Ball", distance)
+            smartdashboard.putNumber("Angle_Ball", angle)
         except Exception as e:
             logging.error(e)
 
