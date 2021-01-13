@@ -1,7 +1,5 @@
 import json
 import sys
-import time
-from datetime import datetime
 
 import cv2
 import ntcore
