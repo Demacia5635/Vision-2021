@@ -1,3 +1,13 @@
+#   System specifications:
+    Camera FoV: 120 degrees at least
+    Camera cable length: at least 1m
+    Camera fps: at least consistant 30 fps
+    
+    Proccessing rate: at least 25fps
+
+    Raspberry Pi: 3+
+    Operation system: PyFRC
+
 #   JSON format:
     {
         "team": <team number>,
