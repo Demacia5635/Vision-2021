@@ -10,16 +10,16 @@ data = {
 }
 
 
-def find_angle(px):
+def find_angle(px, width):
     horizontal_fov = 26
-    nx = (1 / 160) * (px - 159.5)
+    nx = (1 / (width/2)) * (px - (width/2))
     vpw = 2.0 * tan(horizontal_fov / 2)
     x = vpw / 2 * nx
     ax = atan2(x, 1)
     return float(np.degrees(ax))
 
 
-def detect_ball(frame):
+def detect_ball(frame, width):
     image = cv2.undistort(frame, parameters.CAMERA_MATRIX, parameters.DIST_COEFS, None)
     blurred = cv2.GaussianBlur(image, (9, 9), 0)
     hsv = cv2.cvtColor(blurred, cv2.COLOR_BGR2HSV)
@@ -30,13 +30,14 @@ def detect_ball(frame):
     if len(contours) > 0:
         c = max(contours, key=cv2.contourArea)
         ((x, y), radius) = cv2.minEnclosingCircle(c)
-        data["angle"] = round(find_angle(x))
-        data["distance"] = round(find_dis(radius))
-        return data
+        data["angle"] = round(find_angle(x, width))
+        data["distance"] = round(find_dis(radius, width))
+        return data, ((round(x), round(y)), round(radius))
+    return None,((0,0),0)
 
 
-def find_dis(radius):
-    return (18 * 320) / (radius * 2)
+def find_dis(radius, width):
+    return (18 * width) / (radius * 2)
 
 
 def init():
