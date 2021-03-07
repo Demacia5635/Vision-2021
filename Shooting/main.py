@@ -1,15 +1,15 @@
 #  This is the network table updater that sits on the Raspberry during matches
-from networktables import NetworkTables
-from find_ball import detect_ball
-import cv2
-import numpy as np
 import json
-import time
 import sys
+import time
+from datetime import datetime
 
-from cscore import CameraServer, VideoSource, UsbCamera, MjpegServer
-from networktables import NetworkTablesInstance
+import cv2
 import ntcore
+import numpy as np
+from cscore import CameraServer, MjpegServer, UsbCamera, VideoSource
+from detect_hexagon import detect_hexagon
+from networktables import NetworkTables, NetworkTablesInstance
 
 #   JSON format:
 #   {
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     cap = CameraServer.getInstance().getVideo()
     NetworkTables.initialize(server='10.56.35.2')
     width = config.config['width']
-    src = CameraServer.getInstance().putVideo("HexagonCamera",width,int(width*3/4))
+    src = CameraServer.getInstance().putVideo("ShootingCamera",width,int(width*3/4))
 
     sd = NetworkTables.getTable('SmartDashboard')
     # loop forever
@@ -249,11 +249,22 @@ if __name__ == "__main__":
     while True:
         _, frame = cap.grabFrame(frame)
         frame = frame.astype('uint8')
-        x_angle, y_angle, distance = detect_hexagon(frame,width)
+        data, (x_angle, y_angle, dis) = detect_hexagon(frame, width)
+        src.putFrame(frame)
+        last_ang_x = sd.getNumber("ShootingAngleX", 0)
+        last_ang_y = sd.getNumber("ShootingAngleY", 0)
+        last_dis = sd.getNumber("ShootingDistance", 0)
         if data is None:
             data = {
-                "distance": 0,
-                "angle": 0
+                "x_angle": 0,
+                "y_angle": 0,
+                "distance": 0
             }
-        sd.putNumber('HexagonDistance', data["distance"])
-        sd.putNumber('HexagonAngle', data["angle"])
+        if last_dis != data["distance"]:
+            sd.putNumber('ShootingDistance', data["distance"])
+        if last_ang_x != data["x_angle"]:
+            sd.putNumber('ShootingAngleX', data["x_angle"])
+        if last_ang_y != data["y_angle"]:
+            sd.putNumber('ShootingAngleY', data["y_angle"])
+        time = datetime.now()
+        # sd.putNumber('Time', time - f_time)
