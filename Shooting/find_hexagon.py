@@ -1,4 +1,5 @@
 import cv2
+import math
 from math import tan, atan2
 import numpy as np
 import parameters
@@ -11,7 +12,7 @@ data = {
 }
 
 
-def detect_hexagon(frame):
+def detect_hexa(frame, width_given):
     frame = cv2.undistort(frame, parameters.CAMERA_MATRIX, parameters.DIST_COEFS, None)  # By calibrated parameters
     frame = cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
 
@@ -23,12 +24,6 @@ def detect_hexagon(frame):
 
     # Masking and clearing the mask
     mask = cv2.inRange(hsv, parameters.MIN_HSV, parameters.MAX_HSV)
-    cv2.imshow("mask1", mask)
-
-    # mask = cv2.erode(mask, None, iterations=1)
-    # mask = cv2.dilate(mask, None, iterations=1)
-
-    cv2.imshow("mask2", mask)
     # Find contours of mask
     _, contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
@@ -71,7 +66,7 @@ def detect_hexagon(frame):
             return data, (x_angle, y_angle, dis)
     return None, (0, 0, 0)
 
-def find_dis(width):
+def find_distance(width):
     return (parameters.HEXAGON_WIDTH * parameters.FOCAL_LENGTH) / abs(width)
 
 
