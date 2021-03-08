@@ -8,7 +8,7 @@ import cv2
 import ntcore
 import numpy as np
 from cscore import CameraServer, MjpegServer, UsbCamera, VideoSource
-from detect_hexagon import detect_hexagon
+from find_hexagon import detect_hexa
 from networktables import NetworkTables, NetworkTablesInstance
 
 #   JSON format:
@@ -249,7 +249,7 @@ if __name__ == "__main__":
     while True:
         _, frame = cap.grabFrame(frame)
         frame = frame.astype('uint8')
-        data, (x_angle, y_angle, dis) = detect_hexagon(frame, width)
+        data, (x_angle, y_angle, dis) = detect_hexa(frame, width)
         src.putFrame(frame)
         last_ang_x = sd.getNumber("ShootingAngleX", 0)
         last_ang_y = sd.getNumber("ShootingAngleY", 0)
